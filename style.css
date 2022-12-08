@@ -1,0 +1,15 @@
+body{
+    margin: 0;
+    display : flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(191, 130, 130);
+}
+div{
+    position: relative;
+}
+a{
+    top: 0;
+    left:0;
+    position: absolute;
+}
