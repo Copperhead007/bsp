@@ -12,11 +12,11 @@
 //currently have x paths to display and meet rooms in array 
 //still need to find a way to display to canvas without destroying data
 //CONSTANTS
-const bspWidth = 60;
-const bspHeight = 60;
-const bspWidthRatio = 0.45;
-const bspHeightRatio = 0.45;
-const kPasses=3;
+const bspWidth = 100;
+const bspHeight = 100;
+const bspWidthRatio = 0.46;
+const bspHeightRatio = 0.46;
+const kTimes=4;
 const dontWant = true;
 const arr = new Array(bspWidth);
 for (let a = 0; a < bspWidth; a++) {
@@ -77,7 +77,7 @@ class Range{
 //I have leafs, rooms, and paths
 //couple of wrap up functions and will be altogether
 var mcontainer = new Container(0,0, bspWidth, bspHeight);
-var ctree = createsplit(mcontainer, kPasses);
+var ctree = createsplit(mcontainer, kTimes);
 //var g = new Grid(bspWidth,bspHeight);
 console.log(ctree.rake());
 var leafs = ctree.rake();
@@ -102,8 +102,8 @@ function placerooms(room){
   var roomXfinish = roomXstart+room.w;
   var roomYstart = room.y;
   var roomYfinish = roomYstart + room.h;
-  for(var s = 0; s < bspWidth; s++){
-    for(var t = 0; t < bspHeight; t++){
+  for(var s = 1; s < bspWidth-1; s++){
+    for(var t = 1; t < bspHeight-1; t++){
       if((s >=roomXstart && s <= roomXfinish) && (t >= roomYstart &&  t <= roomYfinish)){
         arr[s][t] = 1;
       }
@@ -174,10 +174,12 @@ function Paths(room1, room2){
         return this;
     }
 function Room(container) {
-    this.x=(container.x-1)+randomUtil(1, Math.floor(container.w/2))
-    this.y=(container.y-1)+randomUtil(1, Math.floor(container.h/2))
-    this.w=container.w-(this.x - container.x)
-    this.h=container.h-(this.y - container.y)
+    this.x=(container.x+1)+randomUtil(1, Math.floor(container.w/3));
+    this.y=(container.y+1)+randomUtil(1, Math.floor(container.h/3));
+    this.w=container.w-(this.x - container.x);
+    this.h=container.h-(this.y - container.y);
+    this.w -= randomUtil(0, this.w/3);
+    this.h -= randomUtil(0, this.w/3);
     return this;
 }
 function doesoverlap(val1, val2) {
@@ -224,7 +226,6 @@ function doesoverlap(val1, val2) {
     }
   }
   else {
-    //horizontal using same variables
     tob = new Container(container.x, container.y, container.w, randomUtil(1, container.h));
     bot = new Container(container.x, container.y + tob.h, container.w, (container.h - tob.h));
     if(dontWant){
