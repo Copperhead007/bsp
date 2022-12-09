@@ -12,11 +12,11 @@
 //currently have x paths to display and meet rooms in array 
 //still need to find a way to display to canvas without destroying data
 //CONSTANTS
-const bspWidth = 100;
-const bspHeight = 100;
+const bspWidth = 64;
+const bspHeight = 64;
 const bspWidthRatio = 0.46;
 const bspHeightRatio = 0.46;
-const kTimes=4;
+const kTimes=3;
 const dontWant = true;
 const pathways = [];
 const arr = new Array(bspWidth);
@@ -79,8 +79,8 @@ function placerooms(room){
   var roomXfinish = roomXstart+room.w;
   var roomYstart = room.y;
   var roomYfinish = roomYstart + room.h;
-  for(var s = 1; s < bspWidth-1; s++){
-    for(var t = 1; t < bspHeight-1; t++){
+  for(var s = 0; s < bspWidth; s++){//x
+    for(var t = 0; t < bspHeight; t++){//y
       if((s >=roomXstart && s <= roomXfinish) && (t >= roomYstart &&  t <= roomYfinish)){
         arr[s][t] = 1;
       }
@@ -96,23 +96,24 @@ function PathData(room){
         var rangex1 = new Range(rx1,rx2);
         var rangey1 = new Range(ry1,ry2);
         //console.log(rangex1,rangey1);
-        var midpoint = (Math.floor((rx1+rx2)/2), Math.floor((ry1+ry2)/2)); 
+        //var midpoint = (Math.floor((rx1+rx2)/2), Math.floor((ry1+ry2)/2)); 
         this.xrange = rangex1;
         this.yrange = rangey1;
         //this.mp = midpoint;
         return this;
 }
 function Room(container) {
-    this.x=(container.x+1)+randomUtil(1, Math.floor(container.w/3));
-    this.y=(container.y+1)+randomUtil(1, Math.floor(container.h/3));
-    this.w=container.w-(this.x - container.x);
-    this.h=container.h-(this.y - container.y);
-    this.w -= randomUtil(0, this.w/3);
-    this.h -= randomUtil(0, this.w/3);
+    this.x=(container.x)+randomUtil(1, Math.floor(container.w/3));
+    this.y=(container.y)+randomUtil(1, Math.floor(container.h/3));
+    this.w=(container.w)-(this.x - container.x);
+    this.h=(container.h)-(this.y - container.y);
+    this.w -= randomUtil(0, this.w/4);
+    this.h -= randomUtil(0, this.w/4);
     this.hasPath = false;
     return this;
 }
 function doesoverlap(val1, val2) {
+    console.log("Does Overlap: " + val1 + " " + + val2);
     if(val2.first < val1.first) {
         return val2.second > val1.first;
     }
@@ -171,58 +172,32 @@ function doesoverlap(val1, val2) {
 return [tob, bot]
 }
 function placeit(shortestpath){
-  if(shortestpath.sr.hasPath == false){
-  for(var place = 0; place < pathways.length; place++){
+  //for(var place = 0; place < pathways.length; place++){
     //loop through arr now and place
-    if(shortestpath.lap === "x" && shortestpath.distance > 0){//going down
-      console.log("going down");
-      for(var i=1; i < bspWidth-1; i++){
-        for(var j=1; j < bspHeight-1; j++){
-          if((i == shortestpath.pp) && ((j >= shortestpath.sr.y+shortestpath.sr.h) &&  (j <= shortestpath.or.y))){
+    for(var i=0; i < bspWidth; i++){
+      for(var j=0; j < bspHeight; j++){
+        //if(shortestpath.sr.hasPath !=true || shortestpath.or.hasPath!=true){
+          if(shortestpath.lap === "x" && shortestpath.distance > 0){//going down
+            console.log("going down");//positive distance
+          if((i == shortestpath.pp) && ((j >= shortestpath.sr.y+shortestpath.sr.h) && (j <= shortestpath.or.y))){
             arr[i][j] = 1;
-          }
-        }
-      }
-    }
-    else if(shortestpath.lap === "x" && shortestpath.distance < 0){
-      console.log("going up");
-      console.log(shortestpath.sr);
-      console.log(shortestpath.or);
-      for(var i=1; i < bspWidth-1; i++){
-        for(var j=1; j < bspHeight-1; j++){
+          }}
+          else if(shortestpath.lap === "x" && shortestpath.distance < 0){
+            console.log("going up");//negative distance
           if((i == shortestpath.pp) && ((j <= shortestpath.sr.y) && (j >= shortestpath.or.y+shortestpath.or.h))){
             arr[i][j] = 1;
-          }
-        }
-      }
-    }
-    else if(shortestpath.lap === "y" && shortestpath.distance > 0){//
-      console.log("going right");
-      console.log(shortestpath.sr);
-      console.log(shortestpath.or);
-      for(var i=1; i < bspWidth-1; i++){
-        for(var j=1; j < bspHeight-1; j++){
-          if((j == shortestpath.pp) && ((i >= shortestpath.sr.x+shortestpath.sr.w) && (i <= shortestpath.or.x))){
+          }}
+          else if(shortestpath.lap === "y" && shortestpath.distance > 0){//
+            console.log("going right");//positive distance
+            if((j == shortestpath.pp) && ((i >= shortestpath.sr.x+shortestpath.sr.w) && (i <= shortestpath.or.x))){
             arr[i][j] = 1;
-          }
-        }
-      }
-    }
-    else{//
-      console.log("going left");
-      console.log(shortestpath.sr);
-      console.log(shortestpath.or);
-      for(var i=1; i < bspWidth-1; i++){
-        for(var j=1; j < bspHeight-1; j++){
-          if((j == shortestpath.pp) && ((i <= shortestpath.sr.x) && (i >= shortestpath.or.x + shortestpath.or.w))){
+          }}
+          else if(shortestpath.lap === "y" && shortestpath.distance < 0){
+            console.log("going left");
+            if((j == shortestpath.pp) && ((i <= shortestpath.sr.x) && (i >= shortestpath.or.x + shortestpath.or.w))){
             arr[i][j] = 1;
-          }
-    }
-  }
-}
-}
-}
-}
+          }}
+        }}return;}
 function lonelyRoom(room, index){
   var inn = index;
   var roomsCopy = rooms.slice(0);
@@ -230,8 +205,6 @@ function lonelyRoom(room, index){
   var lonelyPathData = new PathData(lonely);
   roomsCopy.splice(inn,1);
   for(var lr = 0; lr < roomsCopy.length; lr++){
-    if(roomsCopy[lr].hasPath){}
-    else{
       var otherRoom = roomsCopy[lr];
       var othersPathData = new PathData(roomsCopy[lr]);
       xp = doesoverlap(lonelyPathData.xrange, othersPathData.xrange);
@@ -282,8 +255,8 @@ function lonelyRoom(room, index){
     //console.log("Shortest Path Distance by way of Y: " + shortestdist);
     pathways.push(this);
     placeit(this);
-    rooms[this.sri].hasPath = true;
-    rooms[this.ori].hasPath = true;
+    //rooms[this.sri].hasPath = true;
+    //rooms[this.ori].hasPath = true;
     //roomsCopy.splice(inn,1);
   }
     else if(this.lap === "y"){
@@ -292,104 +265,11 @@ function lonelyRoom(room, index){
       //console.log("Shortest Path Distance by way of X: " + shortestdist);
       pathways.push(this);
       placeit(this);
-      rooms[this.sri].hasPath = true;
-      rooms[this.ori].hasPath = true;
+      //rooms[this.sri].hasPath = true;
+      //rooms[this.ori].hasPath = true;
       //roomsCopy.splice(inn,1);
     }
-  }
-}
-function shortestpath(){
-  //for each room create a shortest path to another room
-  //check overlap
-  //ifdoesoverlap
-
-  var roomsTo = rooms.slice(0);
-  //console.log(roomsTo);
-  var selectedRoom;
-  var start = roomsTo.length - 1;
-  while(start > 0){
-    selectedRoom = roomsTo[start];
-    var srPathData = new PathData(selectedRoom);
-    var xp = false;
-    var yp = false;
-    //loop through current size of roomsTo and find closest room
-    //then pass that to function paths to place it
-    for(var p = 0; p < start-1; p++){
-      var otherRoom = roomsTo[p];
-      var othersPathData = new PathData(roomsTo[p]);
-      xp = doesoverlap(srPathData.xrange, othersPathData.xrange);
-      yp = doesoverlap(srPathData.yrange, othersPathData.yrange);
-      var distance = 30;
-      var srindex = start;
-      var orindex = p;
-      var shortestdist = 50;
-      if( xp || yp){
-        if(xp){
-          var x1overlap = Math.max(srPathData.xrange.first, srPathData.xrange.second);
-          var x2overlap = Math.min(othersPathData.xrange.first, othersPathData.xrange.second);
-          var pickpoint = randomUtil(x1overlap,x2overlap);
-          distance = otherRoom.y - srPathData.yrange.second;
-          //console.log("Path Point: "+ pickpoint);
-          //console.log("Y Distance to Cover "+ distance);
-          //push pickpoint and distance to a path
-          //track indices if smallest
-          //after these ifs and for grab the shortest distance path
-          //slice it out of the roomsTo and grid
-          //then carry on with the next
-          if(distance < shortestdist){
-            shortestdist = distance;
-            this.pp = pickpoint;
-            this.lap = "x";
-            this.distance = distance;
-            this.sri = srindex;
-            this.ori = orindex;
-            this.sr = selectedRoom;
-            this.or = otherRoom;
-          }
-      }
-      else if(yp){
-          var y1overlap = Math.max(srPathData.yrange.first, srPathData.yrange.second);
-          var y2overlap = Math.min(othersPathData.xrange.first, othersPathData.xrange.second);
-          var pickpoint = randomUtil(y1overlap,y2overlap);
-          distance = otherRoom.x - srPathData.xrange.second;
-          //console.log("Path Point: "+ pickpoint);
-          //console.log("X Distance to Cover "+ distance);
-          if(distance < shortestdist){
-            shortestdist = distance;
-            this.pp = pickpoint;
-            this.lap = "y";
-            this.distance = distance;
-            this.sri = srindex;
-            this.ori = orindex;
-            this.sr = selectedRoom;
-            this.or = otherRoom;
-          }
-      }else{}
-    }
-  }
-    if(this.lap === "x"){
-    //console.log("Overlaps on the "+ this.lap);
-    //console.log("The Pickpoint on this axis: " + this.pp);
-    //console.log("Shortest Path Distance by way of Y: " + shortestdist)
-    rooms[this.sri].hasPath = true;
-    rooms[this.ori].hasPath = true;
-    pathways.push(this);
-    placeit(this);
-    roomsTo.splice(this.sri,1);;
-  }
-    else if(this.lap === "y"){
-      //console.log("Overlaps on the "+ this.lap);
-      //console.log("The Pickpoint on this axis: " + this.pp);
-      //console.log("Shortest Path Distance by way of X: " + shortestdist);
-      rooms[this.sri].hasPath = true;
-      rooms[this.ori].hasPath = true;
-      pathways.push(this);
-      placeit(this);
-      roomsTo.splice(this.sri,1);
-    }
-    else{}
-    start = roomsTo.length - 1;
-}
+    return;
 }
 var mcontainer = new Container(0,0, bspWidth, bspHeight);
 var ctree = createsplit(mcontainer, kTimes);
@@ -408,7 +288,7 @@ for(var r = 0; r<rooms.length; r++){
 for( var pathCheck = 0; pathCheck < rooms.length; pathCheck++){
   if(rooms[pathCheck].hasPath == false){
   lonelyRoom(rooms[pathCheck], pathCheck);
-  //rooms[pathCheck].hasPath = true;
+  rooms[pathCheck].hasPath = true;
   }
 }
 //console.log(arr);
