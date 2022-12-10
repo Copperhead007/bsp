@@ -141,3 +141,31 @@ function shortestpath(){
 return;
 }
 */
+/*
+$(document).ready(function(){
+var btnHandler = document.getElementById("btnHandler");
+btnHandler.onclick = buttonHandlers;
+function buttonHandlers()
+{
+  console.log(arr);
+    var strMsgHandler = "";
+    for(let i = 0; i < bspWidth; i++){
+      strMsgHandler+="\n"
+        for(let j = 0; j < bspHeight; j++){
+              strMsgHandler+=(arr[i][j]+" ");
+              if(j==(bspWidth-1))
+              strMsgHandler+="\n";
+    }}
+    console.log(strMsgHandler);
+	captainsOrders("element1", strMsgHandler);
+}
+function captainsOrders(strId, strMsg){
+	var elOutput = document.getElementById(strId);
+	elOutput.textContent = strMsg;
+}
+});
+
+ <button type="button" id="btnHandler">See the Dungeon</button>
+    <br/><br/>
+	<div id = "element1">Text to be Rewritten</div>
+*/
