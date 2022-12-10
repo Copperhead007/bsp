@@ -168,4 +168,14 @@ function captainsOrders(strId, strMsg){
  <button type="button" id="btnHandler">See the Dungeon</button>
     <br/><br/>
 	<div id = "element1">Text to be Rewritten</div>
+
+  var isConnect = 0;
+          for(var checkon = 0; checkon < rooms.length; checkon++){
+            if(rooms[checkon].hasPath){
+              isConnect++;
+          }}
+          if(isConnect == rooms.length)
+          {
+            ctree.isConnected = true;
+          }
 */
